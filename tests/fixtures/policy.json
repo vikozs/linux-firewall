@@ -1,0 +1,11 @@
+{
+  "groups": {
+    "web": {"allow_services": ["ssh", "http", "https"],
+            "allow_ports": ["8443/tcp", "9100/tcp"]}
+  },
+  "hosts": {
+    "web01.zav-mb.loc": {"group": "web"},
+    "guard.zav-mb.loc": {"allow_services": ["http"]},
+    "db01.zav-mb.loc": {"allow_services": ["ssh"], "allow_ports": ["5432/tcp"]}
+  }
+}

@@ -1,0 +1,19 @@
+# Run artifacts. Plans and results describe your network exposure; keep them out
+# of version control. Policy files may too, depending on your setup.
+firewall_plan.json
+*plan*.json
+!examples/sample_plan.json
+firewall_results.json
+*results*.json
+firewall_report.xlsx
+*.xlsx
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/

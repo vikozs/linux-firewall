@@ -1,0 +1,13 @@
+===FACTS===
+hostname=nftbox.zav-mb.loc
+distro=Red Hat Enterprise Linux 9.3 (Plow)
+firewalld=notrunning
+backend=nftables
+===NFT===
+table inet filter {
+	chain input {
+		type filter hook input priority 0; policy drop;
+		tcp dport 22 accept
+	}
+}
+===END===

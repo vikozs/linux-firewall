@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linux-firewall"
+version = "1.0.0"
+description = "firewalld policy audit and reconciliation for RHEL 9. Diff the effective ruleset against a declarative policy and reconcile it, with an SSH lockout guard."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Vid Kosir" }]
+keywords = ["linux", "firewall", "firewalld", "nftables", "policy", "audit",
+            "reconciliation", "ssh", "rhel", "sysadmin", "fleet"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Security",
+]
+dependencies = ["openpyxl>=3.0"]
+
+[project.optional-dependencies]
+yaml = ["PyYAML>=5.1"]
+
+[project.urls]
+Homepage = "https://github.com/vikozs/linux-firewall"
+Issues = "https://github.com/vikozs/linux-firewall/issues"
+
+[project.scripts]
+linux-firewall = "linux_firewall:main"
+
+[tool.setuptools]
+py-modules = ["linux_firewall", "ssh_exec", "xlsx_safe"]

@@ -1,0 +1,14 @@
+===FACTS===
+hostname=rogue.zav-mb.loc
+distro=Red Hat Enterprise Linux 9.3 (Plow)
+firewalld=running
+backend=firewalld
+default_zone=public
+active_zones=public
+===RUNTIME===
+services|ssh cockpit
+ports|9090/tcp
+===PERMANENT===
+services|ssh cockpit
+ports|9090/tcp
+===END===

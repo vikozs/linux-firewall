@@ -1,0 +1,211 @@
+{
+  "schema": "linux-firewall.rule-plan",
+  "schema_version": "1.0",
+  "generated": "2026-07-31T22:19:52+00:00",
+  "generator": {
+    "tool": "linux-firewall",
+    "version": "1.0.0",
+    "build": "2026-07-31.initial"
+  },
+  "options": {
+    "policy": "examples/policy.example.json",
+    "ssh_port": "22/tcp"
+  },
+  "summary": {
+    "hosts_total": 4,
+    "hosts_reachable": 3,
+    "hosts_failed": 1,
+    "hosts_firewalld": 2,
+    "hosts_unmanaged": 0,
+    "total_changes": 4,
+    "blocked": 2,
+    "rt_perm_drift": 2
+  },
+  "hosts": [
+    {
+      "host": "web01.zav-mb.loc",
+      "hostname": "web01.zav-mb.loc",
+      "reachable": true,
+      "error": null,
+      "facts": {
+        "hostname": "web01.zav-mb.loc",
+        "distro": "Red Hat Enterprise Linux 9.3 (Plow)",
+        "firewalld": "running",
+        "backend": "firewalld",
+        "default_zone": "public",
+        "active_zones": "public"
+      },
+      "backend": "firewalld",
+      "default_zone": "public",
+      "runtime": {
+        "services": [
+          "http",
+          "ssh",
+          "telnet"
+        ],
+        "ports": [
+          "23/tcp",
+          "8443/tcp"
+        ]
+      },
+      "permanent": {
+        "services": [
+          "http",
+          "ssh"
+        ],
+        "ports": [
+          "8443/tcp"
+        ]
+      },
+      "policy": {
+        "services": [
+          "http",
+          "https",
+          "ssh"
+        ],
+        "ports": [
+          "8443/tcp",
+          "9100/tcp"
+        ]
+      },
+      "managed": true,
+      "rt_perm_drift": [
+        {
+          "type": "service",
+          "name": "telnet",
+          "runtime": true,
+          "permanent": false
+        },
+        {
+          "type": "port",
+          "name": "23/tcp",
+          "runtime": true,
+          "permanent": false
+        }
+      ],
+      "changes": {
+        "add_services": [
+          "https"
+        ],
+        "remove_services": [
+          "telnet"
+        ],
+        "add_ports": [
+          "9100/tcp"
+        ],
+        "remove_ports": [
+          "23/tcp"
+        ],
+        "blocked": []
+      },
+      "counts": {
+        "changes": 4,
+        "blocked": 0,
+        "drift_rt_perm": 2
+      }
+    },
+    {
+      "host": "guard.zav-mb.loc",
+      "hostname": "guard.zav-mb.loc",
+      "reachable": true,
+      "error": null,
+      "facts": {
+        "hostname": "guard.zav-mb.loc",
+        "distro": "Red Hat Enterprise Linux 9.3 (Plow)",
+        "firewalld": "running",
+        "backend": "firewalld",
+        "default_zone": "public",
+        "active_zones": "public"
+      },
+      "backend": "firewalld",
+      "default_zone": "public",
+      "runtime": {
+        "services": [
+          "http",
+          "ssh"
+        ],
+        "ports": [
+          "22/tcp"
+        ]
+      },
+      "permanent": {
+        "services": [
+          "http",
+          "ssh"
+        ],
+        "ports": [
+          "22/tcp"
+        ]
+      },
+      "policy": {
+        "services": [
+          "http"
+        ],
+        "ports": []
+      },
+      "managed": true,
+      "rt_perm_drift": [],
+      "changes": {
+        "add_services": [],
+        "remove_services": [],
+        "add_ports": [],
+        "remove_ports": [],
+        "blocked": [
+          {
+            "type": "service",
+            "name": "ssh",
+            "reason": "would remove SSH access (use --force)"
+          },
+          {
+            "type": "port",
+            "name": "22/tcp",
+            "reason": "would remove the control SSH port (use --force)"
+          }
+        ]
+      },
+      "counts": {
+        "changes": 0,
+        "blocked": 2,
+        "drift_rt_perm": 0
+      }
+    },
+    {
+      "host": "nftbox.zav-mb.loc",
+      "hostname": "nftbox.zav-mb.loc",
+      "reachable": true,
+      "error": null,
+      "facts": {
+        "hostname": "nftbox.zav-mb.loc",
+        "distro": "Red Hat Enterprise Linux 9.3 (Plow)",
+        "firewalld": "notrunning",
+        "backend": "nftables"
+      },
+      "backend": "nftables",
+      "default_zone": "",
+      "managed": false,
+      "changes": {},
+      "unsupported": true,
+      "nft": "table inet filter {\n\tchain input {\n\t\ttype filter hook input priority 0; policy drop;\n\t\ttcp dport 22 accept\n\t}\n}",
+      "counts": {
+        "changes": 0,
+        "drift_rt_perm": 0
+      }
+    },
+    {
+      "host": "app02.zav-mb.loc",
+      "reachable": false,
+      "error": "Connection timed out",
+      "facts": {},
+      "backend": null,
+      "managed": false,
+      "changes": {},
+      "counts": {
+        "changes": 0,
+        "drift_rt_perm": 0
+      }
+    }
+  ],
+  "notes": [
+    "fixture fleet: web01 drifts from policy, guard host would lose SSH (blocked), one nftables box, one down"
+  ]
+}
