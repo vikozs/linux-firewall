@@ -1,5 +1,5 @@
 ===FACTS===
-hostname=rogue.zav-mb.loc
+hostname=rogue.hostname.loc
 distro=Red Hat Enterprise Linux 9.3 (Plow)
 firewalld=running
 backend=firewalld

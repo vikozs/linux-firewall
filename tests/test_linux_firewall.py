@@ -38,19 +38,19 @@ def test_load_policy_rejects_non_mapping(tmp_path):
 
 
 def test_effective_policy_group_merge():
-    s, ports, managed = lf.effective_policy(policy(), "web01.zav-mb.loc")
+    s, ports, managed = lf.effective_policy(policy(), "web01.hostname.loc")
     assert s == {"ssh", "http", "https"}
     assert ports == {"8443/tcp", "9100/tcp"}
     assert managed is True
 
 
 def test_effective_policy_host_specific():
-    s, ports, managed = lf.effective_policy(policy(), "db01.zav-mb.loc")
+    s, ports, managed = lf.effective_policy(policy(), "db01.hostname.loc")
     assert s == {"ssh"} and ports == {"5432/tcp"} and managed
 
 
 def test_effective_policy_unmanaged_host():
-    s, ports, managed = lf.effective_policy(policy(), "rogue.zav-mb.loc")
+    s, ports, managed = lf.effective_policy(policy(), "rogue.hostname.loc")
     assert managed is False
 
 
@@ -74,7 +74,7 @@ def test_parse_rule_block():
 # --- diff -------------------------------------------------------------------
 
 def test_changes_web01():
-    r = rec("discover_web01.txt", "web01.zav-mb.loc")
+    r = rec("discover_web01.txt", "web01.hostname.loc")
     ch = r["changes"]
     assert ch["add_services"] == ["https"]
     assert ch["remove_services"] == ["telnet"]
@@ -88,7 +88,7 @@ def test_changes_web01():
 
 
 def test_ssh_guard_blocks_ssh_removal():
-    r = rec("discover_guard.txt", "guard.zav-mb.loc", force=False)
+    r = rec("discover_guard.txt", "guard.hostname.loc", force=False)
     ch = r["changes"]
     # policy omits ssh and all ports; guard must block removing ssh + 22/tcp
     assert "ssh" not in ch["remove_services"]
@@ -99,7 +99,7 @@ def test_ssh_guard_blocks_ssh_removal():
 
 
 def test_force_disables_ssh_guard():
-    r = rec("discover_guard.txt", "guard.zav-mb.loc", force=True)
+    r = rec("discover_guard.txt", "guard.hostname.loc", force=True)
     ch = r["changes"]
     assert "ssh" in ch["remove_services"]
     assert "22/tcp" in ch["remove_ports"]
@@ -107,14 +107,14 @@ def test_force_disables_ssh_guard():
 
 
 def test_unmanaged_host_proposes_no_removals():
-    r = rec("discover_unmanaged.txt", "rogue.zav-mb.loc")
+    r = rec("discover_unmanaged.txt", "rogue.hostname.loc")
     assert r["managed"] is False
     assert r["counts"]["changes"] == 0
     assert r["changes"].get("note")
 
 
 def test_nftables_backend_not_diffed():
-    r = rec("discover_nft.txt", "nftbox.zav-mb.loc")
+    r = rec("discover_nft.txt", "nftbox.hostname.loc")
     assert r["backend"] == "nftables"
     assert r.get("unsupported") is True
     assert r["counts"]["changes"] == 0
@@ -180,9 +180,9 @@ def test_parse_apply_partial_on_failure():
 # --- plan / IO --------------------------------------------------------------
 
 def test_build_plan_summary():
-    recs = [rec("discover_web01.txt", "web01.zav-mb.loc"),
-            rec("discover_guard.txt", "guard.zav-mb.loc"),
-            rec("discover_unmanaged.txt", "rogue.zav-mb.loc"),
+    recs = [rec("discover_web01.txt", "web01.hostname.loc"),
+            rec("discover_guard.txt", "guard.hostname.loc"),
+            rec("discover_unmanaged.txt", "rogue.hostname.loc"),
             lf.host_record(Result("dead", ok=False, error="x"),
                            policy(), lf.DEFAULT_SSH_PORT, False)]
     plan = lf.build_plan(recs, "policy.json", lf.DEFAULT_SSH_PORT)
@@ -195,7 +195,7 @@ def test_build_plan_summary():
 
 
 def test_plan_roundtrip(tmp_path):
-    plan = lf.build_plan([rec("discover_web01.txt", "web01.zav-mb.loc")],
+    plan = lf.build_plan([rec("discover_web01.txt", "web01.hostname.loc")],
                          "policy.json", lf.DEFAULT_SSH_PORT)
     p = tmp_path / "plan.json"
     lf.write_plan(str(p), plan)
@@ -213,9 +213,9 @@ def test_load_plan_rejects_wrong_schema(tmp_path):
 
 def test_write_report_is_formula_clean(tmp_path):
     from xlsx_safe import verify
-    recs = [rec("discover_web01.txt", "web01.zav-mb.loc"),
-            rec("discover_guard.txt", "guard.zav-mb.loc"),
-            rec("discover_nft.txt", "nftbox.zav-mb.loc"),
+    recs = [rec("discover_web01.txt", "web01.hostname.loc"),
+            rec("discover_guard.txt", "guard.hostname.loc"),
+            rec("discover_nft.txt", "nftbox.hostname.loc"),
             lf.host_record(Result("dead", ok=False, error="x"),
                            policy(), lf.DEFAULT_SSH_PORT, False)]
     plan = lf.build_plan(recs, "policy.json", lf.DEFAULT_SSH_PORT)
@@ -235,7 +235,7 @@ def test_report_neutralizes_formula_injection(tmp_path):
             "backend=firewalld\ndefault_zone=public\n===RUNTIME===\n"
             "services|ssh\nports|22/tcp\n===PERMANENT===\nservices|ssh\n"
             "ports|22/tcp\n===END===\n")
-    r = lf.host_record(Result("db01.zav-mb.loc", ok=True, stdout=body),
+    r = lf.host_record(Result("db01.hostname.loc", ok=True, stdout=body),
                        policy(), lf.DEFAULT_SSH_PORT, False)
     plan = lf.build_plan([r], "policy.json", lf.DEFAULT_SSH_PORT)
     out = tmp_path / "r.xlsx"

@@ -47,8 +47,8 @@ not listed.
             "allow_ports": ["8443/tcp"]}
   },
   "hosts": {
-    "web01.zav-mb.loc": {"group": "web", "allow_ports": ["9100/tcp"]},
-    "db01.zav-mb.loc": {"allow_services": ["ssh"], "allow_ports": ["5432/tcp"]}
+    "web01.hostname.loc": {"group": "web", "allow_ports": ["9100/tcp"]},
+    "db01.hostname.loc": {"allow_services": ["ssh"], "allow_ports": ["5432/tcp"]}
   },
   "defaults": {"allow_services": ["ssh"]}
 }
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 Audit the fleet against a policy, writing `firewall_plan.json` and a report:
 
 ```
-python3 linux_firewall.py discover -H hosts.txt -u sa.vko --policy policy.json \
+python3 linux_firewall.py discover -H hosts.txt -u local.user --policy policy.json \
     --ask-ssh-pass --sudo-pass-same-as-ssh
 ```
 
@@ -83,14 +83,14 @@ Review the report, then reconcile, confirming per host:
 
 ```
 python3 linux_firewall.py apply --plan firewall_plan.json --policy policy.json \
-    -H hosts.txt -u sa.vko --ask-ssh-pass --sudo-pass-same-as-ssh
+    -H hosts.txt -u local.user --ask-ssh-pass --sudo-pass-same-as-ssh
 ```
 
 If your SSH runs on a non-default port, tell the guard so it protects the right
 one:
 
 ```
-python3 linux_firewall.py discover -H hosts.txt -u sa.vko --policy policy.json \
+python3 linux_firewall.py discover -H hosts.txt -u local.user --policy policy.json \
     --ask-ssh-pass --sudo-pass-same-as-ssh --ssh-port 2222/tcp
 ```
 

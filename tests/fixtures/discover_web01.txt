@@ -1,5 +1,5 @@
 ===FACTS===
-hostname=web01.zav-mb.loc
+hostname=web01.hostname.loc
 distro=Red Hat Enterprise Linux 9.3 (Plow)
 firewalld=running
 backend=firewalld

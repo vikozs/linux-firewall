@@ -1,5 +1,5 @@
 ===FACTS===
-hostname=nftbox.zav-mb.loc
+hostname=nftbox.hostname.loc
 distro=Red Hat Enterprise Linux 9.3 (Plow)
 firewalld=notrunning
 backend=nftables
